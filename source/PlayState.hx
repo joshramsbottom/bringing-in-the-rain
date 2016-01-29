@@ -19,6 +19,17 @@ class PlayState extends FlxState
 	private var items:Array<Item>;
 	private var colors:Array<Int>;
 	private var currentItem:Item;
+	private var allItems:Array<String> = [
+		"lamb",
+		"firstBorn",
+		"haybale",
+		"twigBundle",
+		"goldIngot",
+		"fruit",
+		"bread",
+		"idol",
+		"skull"
+	];
 	private function drag(item:Item):Void {
 		currentItem = item;
 		currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
@@ -37,6 +48,7 @@ class PlayState extends FlxState
 		item.y = place.y;
 		item.oldX = item.x;
 		item.oldY = item.y;
+		trace("Item "+item.getName()+" dropped on place");
 	}
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -52,7 +64,7 @@ class PlayState extends FlxState
 		add(altar.placeGroup);
 		currentItem = null;
 		FlxG.plugins.add(new MouseEventManager());
-		items = [for (i in (0...9)) new Item(300+50*i, 450, colors[i])];
+		items = [for (i in (0...9)) new Item(300+50*i, 450, colors[i], allItems[i])];
 		for(item in items) {
 			MouseEventManager.add(item, drag, drop);
 			add(item);

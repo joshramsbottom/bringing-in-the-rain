@@ -24,7 +24,6 @@ class Altar extends FlxSprite
 		"skull"
 	];
 
-	private var sequence:Array<Int>;
 	private var places:Array<FlxSprite>;
 	public var placeGroup:FlxTypedGroup<FlxSprite>;
 	public function new(X:Float=0, Y:Float=0) {

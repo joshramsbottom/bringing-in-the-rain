@@ -15,11 +15,12 @@ class Item extends FlxSprite
 	public var oldY:Float;
 	private var offsetX:Float;
 	private var offsetY:Float;
-	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE) {
+	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE, name:String="unknown") {
 		oldX = X;
 		oldY = Y;
 		offsetX = 0;
 		offsetY = 0;
+		this.name = name;
 		super(X, Y);
 		makeGraphic(32, 32, color);
 	}
@@ -34,5 +35,8 @@ class Item extends FlxSprite
 	}
 	public function getOffsetY():Float {
 		return this.offsetY;
+	}
+	public function getName():String {
+		return this.name;
 	}
 }
