@@ -7,6 +7,8 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxColor;
+import flixel.plugin.MouseEventManager;
+import flash.events.MouseEvent;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -16,6 +18,26 @@ class PlayState extends FlxState
 	private var altar:Altar;
 	private var items:Array<Item>;
 	private var colors:Array<Int>;
+	private var currentItem:Item;
+	private function drag(item:Item):Void {
+		currentItem = item;
+		currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
+		currentItem.setOffsetY(FlxG.mouse.y-currentItem.y);
+	}
+	private function drop(item:Item):Void {
+		// Check if the item is over the altar and only drop then
+		if(!FlxG.overlap(item, altar.placeGroup, snapItem)) {
+			item.x = item.oldX;
+			item.y = item.oldY;
+		}
+		currentItem = null;
+	}
+	private function snapItem(item:Item, place:FlxSprite) {
+		item.x = place.x;
+		item.y = place.y;
+		item.oldX = item.x;
+		item.oldY = item.y;
+	}
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -27,8 +49,12 @@ class PlayState extends FlxState
 		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
 		altar = new Altar(300, 300);
 		add(altar);
+		add(altar.placeGroup);
+		currentItem = null;
+		FlxG.plugins.add(new MouseEventManager());
 		items = [for (i in (0...9)) new Item(300+50*i, 450, colors[i])];
 		for(item in items) {
+			MouseEventManager.add(item, drag, drop);
 			add(item);
 		}
 		super.create();
@@ -49,6 +75,11 @@ class PlayState extends FlxState
 	 */
 	override public function update():Void
 	{
+		// This handles dragging functionality
+		if(currentItem!=null) {
+			currentItem.x = FlxG.mouse.x-currentItem.getOffsetX();
+			currentItem.y = FlxG.mouse.y-currentItem.getOffsetY();
+		}
 		super.update();
 	}	
 }
