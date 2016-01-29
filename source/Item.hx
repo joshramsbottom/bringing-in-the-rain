@@ -8,6 +8,8 @@ import flixel.util.FlxColor;
 
 class Item extends FlxSprite
 {
+	private var name:String;
+
 	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE) {
 		super(X, Y);
 		makeGraphic(32, 32, color);
