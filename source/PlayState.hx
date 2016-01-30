@@ -34,19 +34,20 @@ class PlayState extends FlxState
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
+			trace(item.getName());
 			currentItem = item;
 			currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
 			currentItem.setOffsetY(FlxG.mouse.y-currentItem.y);
 		}
 	}
 	private function drop(item:Item):Void {
-		// Check if the item is over the altar and only drop then
+		// Check if the item is over the altar and only then do we drop it
 		if(!FlxG.overlap(item, altar.placeGroup, snapItem)) {
 			item.revertPosition();
 		}
 		currentItem = null;
 	}
-	private function snapItem(item:Item, place:Place) {
+	private function snapItem(item:Item, place:Place):Void {
 		if(!place.getOccupied()) {
 			item.x = place.x;
 			item.y = place.y;
@@ -54,6 +55,7 @@ class PlayState extends FlxState
 			trace("Item "+item.getName()+" dropped on place "+ place.getName());
 			item.setPlaced(true);
 			place.setOccupied(true);
+			place.setPlacedItem(item.getName());
 			MouseEventManager.remove(item);
 		} else {
 			item.revertPosition();
@@ -63,13 +65,27 @@ class PlayState extends FlxState
 	private function guessCallback() {
 		var placedCount:Int = 0;
 		for (item in items) {
-			if (item.getPlaced())
+			if (item.getPlaced()) {
 				placedCount ++;
+			}
 		}
-		if (placedCount < 4)
+		if (placedCount < 4) {
 			FlxG.camera.shake(0.01, 0.05, FlxCamera.SHAKE_HORIZONTAL_ONLY);
-		else
+		}
+		else {
+			// The first number is the correct items. The second number is the items in the wrong order
+			var guess:Array<Int> = altar.checkGuess();
+			trace(guess[0]+" item"+(if(guess[0]==1)""else"s")+" correct, "+guess[1]+" item"+(if(guess[0]==1)""else"s")+" in the wrong order");
 			trace(altar.checkGuess());
+			clearAltar();
+		}
+	}
+	private function clearAltar():Void {
+		altar.clear();
+		for(item in items) {
+			item.clear();
+			MouseEventManager.add(item, drag, drop);
+		}
 	}
 
 	/**
