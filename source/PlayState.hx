@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -53,7 +54,21 @@ class PlayState extends FlxState
 		item.oldY = item.y;
 		trace("Item "+item.getName()+" dropped on place "+ place.getName());
 		item.setPlaced(true);
+		place.setPlacedItem(item.getName());
 	}
+
+	private function guessCallback() {
+		var placedCount:Int = 0;
+		for (item in items) {
+			if (item.getPlaced())
+				placedCount ++;
+		}
+		if (placedCount < 4)
+			FlxG.camera.shake(0.01, 0.05, FlxCamera.SHAKE_HORIZONTAL_ONLY);
+		else
+			trace(altar.checkGuess());
+	}
+
 	/**
 	 * Function that is called up when to state is created to set it up. 
 	 */
@@ -73,6 +88,10 @@ class PlayState extends FlxState
 			MouseEventManager.add(item, drag, drop);
 			add(item);
 		}
+
+		var guessButton:FlxButton = new FlxButton(700, 500, "Sacrifice", guessCallback);
+		add(guessButton);
+
 		super.create();
 		// 
 	}
