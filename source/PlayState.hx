@@ -100,7 +100,7 @@ class PlayState extends FlxState
 		// This may not be 100%
 		// The place's hitbox seems off
 		if(!place.getOccupied() && !item.getPlaced()) {
-			godlyRays.reset(place.x, place.y-190+32);
+			godlyRays.reset(place.x, place.y-190+22);
 		}
 		else {
 			godlyRays.kill();
