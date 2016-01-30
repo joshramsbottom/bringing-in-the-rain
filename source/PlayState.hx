@@ -41,8 +41,7 @@ class PlayState extends FlxState
 	private function drop(item:Item):Void {
 		// Check if the item is over the altar and only drop then
 		if(!FlxG.overlap(item, altar.placeGroup, snapItem)) {
-			item.x = item.oldX;
-			item.y = item.oldY;
+			item.revertPosition();
 		}
 		currentItem = null;
 	}
@@ -50,15 +49,13 @@ class PlayState extends FlxState
 		if(!place.getOccupied()) {
 			item.x = place.x;
 			item.y = place.y;
-			item.oldX = item.x;
-			item.oldY = item.y;
+			item.lockPosition();
 			trace("Item "+item.getName()+" dropped on place "+ place.getName());
 			item.setPlaced(true);
 			place.setOccupied(true);
 			MouseEventManager.remove(item);
 		} else {
-			item.x = item.oldX;
-			item.y = item.oldY;
+			item.revertPosition();
 		}
 	}
 	/**
