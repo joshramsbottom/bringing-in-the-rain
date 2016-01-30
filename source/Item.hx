@@ -15,6 +15,7 @@ class Item extends FlxSprite
 	public var oldY:Float;
 	private var offsetX:Float;
 	private var offsetY:Float;
+	private var placed:Bool;
 	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE, name:String="unknown") {
 		oldX = X;
 		oldY = Y;
@@ -38,5 +39,11 @@ class Item extends FlxSprite
 	}
 	public function getName():String {
 		return this.name;
+	}
+	public function setPlaced(placed:Bool):Void {
+		this.placed = placed;
+	}
+	public function getPlaced():Bool {
+		return this.placed;
 	}
 }
