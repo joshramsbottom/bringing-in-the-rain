@@ -22,11 +22,11 @@ class Altar extends FlxSprite
 		trace(sequence);
 		super(X, Y);
 
-		places = [for(i in (0...4)) new Place(x+64*i, y, sequence[i])];
+		places = [for(i in (0...4)) new Place(x+32*i, y, sequence[i])];
 		placeGroup = new FlxTypedGroup();
 
 		loadGraphic("assets/images/altar.png");
-		setGraphicSize(256, 98);
+		setGraphicSize(128, 49);
 		updateHitbox();
 
 		for(place in places) {
