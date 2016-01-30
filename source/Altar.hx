@@ -19,7 +19,7 @@ class Altar extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, itemNames:Array<String>) {
 		allItems = itemNames;
 		sequence = initSequence();
-		trace(sequence);
+		//trace(sequence);
 		super(X, Y);
 
 		places = [for(i in (0...4)) new Place(x+32*i, y, sequence[i])];
@@ -50,11 +50,11 @@ class Altar extends FlxSprite
 	public function checkGuess():Array<Int> {
 		var totalRightItems:Int = 0;
 		var wrongOrderItems:Int = 0;
-		trace(sequence);
+		//trace(sequence);
 
 		for (place in places) {
 			var placedItem:String = place.getPlacedItem();
-			trace(placedItem, place.getName());
+			//trace(placedItem, place.getName());
 			if (sequence.indexOf(placedItem) != -1)
 				totalRightItems ++;
 			if (placedItem != place.getName())
