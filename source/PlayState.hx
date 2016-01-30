@@ -31,9 +31,12 @@ class PlayState extends FlxState
 		"skull"
 	];
 	private function drag(item:Item):Void {
-		currentItem = item;
-		currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
-		currentItem.setOffsetY(FlxG.mouse.y-currentItem.y);
+		// If it's not placed, we can drag it around
+		if(!item.getPlaced()) {
+			currentItem = item;
+			currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
+			currentItem.setOffsetY(FlxG.mouse.y-currentItem.y);
+		}
 	}
 	private function drop(item:Item):Void {
 		// Check if the item is over the altar and only drop then
@@ -43,12 +46,13 @@ class PlayState extends FlxState
 		}
 		currentItem = null;
 	}
-	private function snapItem(item:Item, place:FlxSprite) {
+	private function snapItem(item:Item, place:Place) {
 		item.x = place.x;
 		item.y = place.y;
 		item.oldX = item.x;
 		item.oldY = item.y;
-		trace("Item "+item.getName()+" dropped on place");
+		trace("Item "+item.getName()+" dropped on place "+ place.getName());
+		item.setPlaced(true);
 	}
 	/**
 	 * Function that is called up when to state is created to set it up. 
@@ -59,7 +63,7 @@ class PlayState extends FlxState
 		//a random selection of the nine items, 
 		//and nine items which the user will click on
 		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
-		altar = new Altar(300, 300);
+		altar = new Altar(300, 300, allItems);
 		add(altar);
 		add(altar.placeGroup);
 		currentItem = null;

@@ -12,29 +12,18 @@ import flixel.group.FlxTypedGroup;
 class Altar extends FlxSprite
 {
 	private var sequence:Array<String>;
-	private var allItems:Array<String> = [
-		"lamb",
-		"firstBorn",
-		"haybale",
-		"twigBundle",
-		"goldIngot",
-		"fruit",
-		"bread",
-		"idol",
-		"skull"
-	];
-
-	private var places:Array<FlxSprite>;
-	public var placeGroup:FlxTypedGroup<FlxSprite>;
-	public function new(X:Float=0, Y:Float=0) {
+	private var allItems:Array<String>;
+	private var places:Array<Place>;
+	public var placeGroup:FlxTypedGroup<Place>;
+	public function new(X:Float=0, Y:Float=0, itemNames:Array<String>) {
+		allItems = itemNames;
 		sequence = initSequence();
 		trace(sequence);
-		places = [for(i in (1...5)) new FlxSprite(300+50*i, 350)];
+		places = [for(i in (0...4)) new Place(350+50*i, 350, sequence[i])];
 		placeGroup = new FlxTypedGroup();
 		super(X, Y);
 		makeGraphic(300, 100, FlxColor.BLUE);
 		for(place in places) {
-			place.makeGraphic(32, 32, FlxColor.AZURE);
 			placeGroup.add(place);
 		}
 	}
