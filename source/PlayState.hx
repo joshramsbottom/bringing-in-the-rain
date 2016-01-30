@@ -19,6 +19,7 @@ import flash.events.MouseEvent;
  */
 class PlayState extends FlxState
 {
+	private var soundManager:SoundManager;
 	private var backgroundSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var levelSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var characterSprites:FlxSpriteGroup = new FlxSpriteGroup();
@@ -296,6 +297,8 @@ class PlayState extends FlxState
 		add(levelSprites);
 		add(characterSprites);
 
+		// Add sounds
+		soundManager = new SoundManager();
 		//var guessButton:FlxButton = new FlxButton(320, 250, "Sacrifice", guessCallback);
 		//add(guessButton);
 
