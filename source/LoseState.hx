@@ -24,9 +24,9 @@ class LoseState extends FlxState
 	 */
 	override public function create():Void
 	{
-		_loseText = new FlxText(300, 300, 300, "The Gods are angry with your sacrifice. Your village burns to the ground. Blood rains from the skies and the sharknado destroys your crops. You die.", 20);
+		_loseText = new FlxText(150, 150, 150, "The Gods are angry with your sacrifice. Your village burns to the ground. Blood rains from the skies and the sharknado destroys your crops. You die.", 10);
 		add(_loseText);
-		_btnPlay = new FlxButton(350, 500, "Play again", clickPlay);
+		_btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
 		add(_btnPlay);
 		super.create();
 	}
