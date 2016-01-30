@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.FlxCamera;
+import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
@@ -16,6 +17,9 @@ import flash.events.MouseEvent;
  */
 class PlayState extends FlxState
 {
+	private var levelSprites:FlxSpriteGroup = new FlxSpriteGroup();
+	private var characterSprites:FlxSpriteGroup = new FlxSpriteGroup();
+	private var effectsSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var altar:Altar;
 	private var items:Array<Item>;
 	private var colors:Array<Int>;
@@ -82,15 +86,31 @@ class PlayState extends FlxState
 		//and nine items which the user will click on
 		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
 		altar = new Altar(300, 300, allItems);
-		add(altar);
-		add(altar.placeGroup);
+		levelSprites.add(altar);
+		for (place in altar.placeGroup)
+			characterSprites.add(place);
 		currentItem = null;
 		FlxG.plugins.add(new MouseEventManager());
 		items = [for (i in (0...9)) new Item(300+50*i, 450, colors[i], allItems[i])];
 		for(item in items) {
 			MouseEventManager.add(item, drag, drop);
-			add(item);
+			characterSprites.add(item);
 		}
+
+		// Add other level sprites
+		var hutsSprite = new LevelObject("huts.png", 402, 202);
+		levelSprites.add(hutsSprite);
+
+		// Add background sprite
+		var bgSprite:FlxSprite = new FlxSprite();
+		bgSprite.loadGraphic("assets/images/background.png");
+		bgSprite.setGraphicSize(800, 600);
+		bgSprite.updateHitbox();
+
+		// Add sprites in correct order
+		add(bgSprite);
+		add(levelSprites);
+		add(characterSprites);
 
 		var guessButton:FlxButton = new FlxButton(700, 500, "Sacrifice", guessCallback);
 		add(guessButton);
