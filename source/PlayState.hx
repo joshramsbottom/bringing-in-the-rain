@@ -47,12 +47,19 @@ class PlayState extends FlxState
 		currentItem = null;
 	}
 	private function snapItem(item:Item, place:Place) {
-		item.x = place.x;
-		item.y = place.y;
-		item.oldX = item.x;
-		item.oldY = item.y;
-		trace("Item "+item.getName()+" dropped on place "+ place.getName());
-		item.setPlaced(true);
+		if(!place.getOccupied()) {
+			item.x = place.x;
+			item.y = place.y;
+			item.oldX = item.x;
+			item.oldY = item.y;
+			trace("Item "+item.getName()+" dropped on place "+ place.getName());
+			item.setPlaced(true);
+			place.setOccupied(true);
+			MouseEventManager.remove(item);
+		} else {
+			item.x = item.oldX;
+			item.y = item.oldY;
+		}
 	}
 	/**
 	 * Function that is called up when to state is created to set it up. 
