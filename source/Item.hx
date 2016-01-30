@@ -11,8 +11,8 @@ class Item extends FlxSprite
 {
 	private var name:String;
 
-	public var oldX:Float;
-	public var oldY:Float;
+	private var oldX:Float;
+	private var oldY:Float;
 	private var offsetX:Float;
 	private var offsetY:Float;
 	private var placed:Bool;
@@ -46,5 +46,13 @@ class Item extends FlxSprite
 	}
 	public function getPlaced():Bool {
 		return this.placed;
+	}
+	public function lockPosition():Void {
+		this.oldX = this.x;
+		this.oldY = this.y;
+	}
+	public function revertPosition():Void {
+		this.x = this.oldX;
+		this.y = this.oldY;
 	}
 }
