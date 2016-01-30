@@ -13,6 +13,7 @@ class Place extends FlxSprite {
 		this.placeName = placeName;
 		super(X, Y);
 		setGraphicSize(32, 32);
+		updateHitbox();
 	}
 	public function getName():String {
 		return placeName;

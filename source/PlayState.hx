@@ -23,8 +23,8 @@ class PlayState extends FlxState
 	private var effectsSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var altar:Altar;
 	private var items:Array<Item> = [];
-	private var colors:Array<Int>;
 	private var currentItem:Item;
+	private var godlyRays:TiledLevelObject;
 	private var allItems:Array<String> = [
 		"first_born",
 		"idol",
@@ -85,6 +85,13 @@ class PlayState extends FlxState
 		} else {
 			item.revertPosition();
 		}
+		godlyRays.kill();
+	}
+	private function toggleGodlyRays(item:Item, place:Place):Void {
+		// This may not be 100%
+		if(!place.getOccupied() && !item.getPlaced()) {
+			godlyRays.reset(place.x, place.y-190+32);
+		}
 	}
 
 	private function guessCallback() {
@@ -141,7 +148,6 @@ class PlayState extends FlxState
 		// Here we need to set up an altar with four spaces, 
 		//a random selection of the nine items, 
 		//and nine items which the user will click on
-		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
 		altar = new Altar(136, 166, allItems);
 		levelSprites.add(altar);
 		for (place in altar.placeGroup)
@@ -172,7 +178,8 @@ class PlayState extends FlxState
 		levelSprites.add(sheepSprite);
 		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
-		var riverSprite = new LevelObject(325, 108, "river.png", 75, 100);
+		var riverSprite = new TiledLevelObject(325, 108, "river.png", 75, 100);
+		riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
 		levelSprites.add(riverSprite);
 		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
 		levelSprites.add(leftVillager);
@@ -182,6 +189,11 @@ class PlayState extends FlxState
 		levelSprites.add(bigVillager);
 		var leader = new LevelObject(85, 91, "villager_tribal.png", 29, 71);
 		levelSprites.add(leader);
+		godlyRays = new TiledLevelObject(0, 0, "god_rays.png", 32, 190);
+		godlyRays.animation.add("sparkle", [0,1,2,3,4,5], 6, true);
+		godlyRays.animation.play("sparkle");
+		characterSprites.add(godlyRays);
+		godlyRays.kill();
 		// Altar: 136, 166
 		// Crops: 346, 110
 		// Sheep: 0, 106
@@ -236,6 +248,9 @@ class PlayState extends FlxState
 		if(currentItem!=null) {
 			currentItem.x = FlxG.mouse.x-currentItem.getOffsetX();
 			currentItem.y = FlxG.mouse.y-currentItem.getOffsetY();
+			if(!FlxG.overlap(currentItem, altar.placeGroup, toggleGodlyRays)) {
+				godlyRays.kill();
+			}
 		}
 		super.update();
 	}	
