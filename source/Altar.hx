@@ -40,4 +40,18 @@ class Altar extends FlxSprite
 		}
 		return chosenItems;
 	}
+
+	public function checkGuess():Array<Int> {
+		var totalRightItems:Int = 0;
+		var wrongOrderItems:Int = 0;
+
+		for (place in places) {
+			var placedItem:String = place.getPlacedItem();
+			if (sequence.indexOf(placedItem) != -1)
+				totalRightItems ++;
+			if (placedItem != place.getName())
+				wrongOrderItems ++;
+		}
+		return [totalRightItems, wrongOrderItems];
+	}
 }
