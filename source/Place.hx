@@ -24,6 +24,7 @@ class Place extends FlxSprite {
 
 	public function setPlacedItem(name:String) {
 		placedItem = name;
+	}
 	public function getOccupied():Bool {
 		return occupied;
 	}
