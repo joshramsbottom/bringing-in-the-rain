@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxColor;
+import flixel.util.FlxRandom;
 import flixel.plugin.MouseEventManager;
 import flash.events.MouseEvent;
 
@@ -31,6 +32,27 @@ class PlayState extends FlxState
 		"idol",
 		"skull"
 	];
+	private var rain:Array<String> = [
+		"no rain",
+		"drizzle",
+		"light rain",
+		"medium rain",
+		"lots of rain!"
+	];
+	private var plagueCount:Int = 0;
+	private var plagues:Array<String> = [
+		"Frogs rain from the skies.",
+		"Locusts ravage your crops.",
+		"The river floods, washing away your homes.",
+		"The river turns to blood.",
+		"There is an earthquake. Your houses crumble to dust",
+		"There is a tornado. Your houses are blown away",
+		"Pestilence ravages your village.",
+		"Wolves attack your village.",
+		"A rival village raids your crops.",
+		"An arrow shoots down your greatest warrior",
+		"An alien abducts your firstborn"
+	];
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
@@ -52,7 +74,8 @@ class PlayState extends FlxState
 			item.x = place.x;
 			item.y = place.y;
 			item.lockPosition();
-			trace("Item "+item.getName()+" dropped on place "+ place.getName());
+			// This is wrong. You can drop it on two places
+			//trace("Item "+item.getName()+" dropped on place "+ place.getName());
 			item.setPlaced(true);
 			place.setOccupied(true);
 			place.setPlacedItem(item.getName());
@@ -75,10 +98,30 @@ class PlayState extends FlxState
 		else {
 			// The first number is the correct items. The second number is the items in the wrong order
 			var guess:Array<Int> = altar.checkGuess();
-			trace(guess[0]+" item"+(if(guess[0]==1)""else"s")+" correct, "+guess[1]+" item"+(if(guess[0]==1)""else"s")+" in the wrong order");
-			trace(altar.checkGuess());
+			var correctItems:Int = guess[0];
+			var wrongOrder:Int = guess[1];
+			trace(correctItems+" item"+(if(correctItems==1)""else"s")+" correct, "+wrongOrder+" item"+(if(wrongOrder==1)""else"s")+" in the wrong order");
+			// The win condition is when there are 4 correct items and none in the wrong order (rain, double rainbows, and growing crops)
+			// The more correct items there are, the more rain there is
+			// If there are items in the wrong order, something bad happens
+			// If all the bad things happen, the Gods get angry with you and your village gets destroyed
+			trace(rain[correctItems]);
+			if(wrongOrder==0) {
+				FlxG.switchState(new WinState());
+			}
+			else {
+				trace(badStuff());
+				plagueCount++;
+				if(plagueCount >= 4) { // Set this to something like 15
+					FlxG.switchState(new LoseState());
+				}
+			}
+			//trace(altar.checkGuess());
 			clearAltar();
 		}
+	}
+	private function badStuff():String {
+		return FlxRandom.getObject(plagues);
 	}
 	private function clearAltar():Void {
 		altar.clear();
