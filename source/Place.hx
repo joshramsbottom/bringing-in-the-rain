@@ -5,6 +5,7 @@ import flixel.util.FlxColor;
 
 class Place extends FlxSprite {
 	private var placeName:String;
+	private var placedItem:String;
 	private var occupied:Bool;
 
 	public function new(X:Float, Y:Float, placeName:String) {
@@ -16,6 +17,13 @@ class Place extends FlxSprite {
 	public function getName():String {
 		return placeName;
 	}
+
+	public function getPlacedItem():String {
+		return placedItem;
+	}
+
+	public function setPlacedItem(name:String) {
+		placedItem = name;
 	public function getOccupied():Bool {
 		return occupied;
 	}
