@@ -31,4 +31,8 @@ class Place extends FlxSprite {
 	public function setOccupied(occupied:Bool):Void {
 		this.occupied = occupied;
 	}
+	public function clear():Void {
+		placedItem = null;
+		occupied = false;
+	}
 }
