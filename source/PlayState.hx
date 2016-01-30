@@ -22,19 +22,19 @@ class PlayState extends FlxState
 	private var characterSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var effectsSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var altar:Altar;
-	private var items:Array<Item>;
+	private var items:Array<Item> = [];
 	private var colors:Array<Int>;
 	private var currentItem:Item;
 	private var allItems:Array<String> = [
-		"lamb",
-		"firstBorn",
-		"haybale",
-		"twigBundle",
-		"goldIngot",
-		"fruit",
-		"bread",
+		"first_born",
 		"idol",
-		"skull"
+		"skull",
+		"ps4",
+		"wheat",
+		"lamb",
+		"gold",
+		"bread",
+		"fruit_basket"
 	];
 	private var rain:Array<String> = [
 		"no rain",
@@ -74,12 +74,10 @@ class PlayState extends FlxState
 		currentItem = null;
 	}
 	private function snapItem(item:Item, place:Place):Void {
-		if(!place.getOccupied()) {
+		if(!place.getOccupied() && !item.getPlaced()) {
 			item.x = place.x;
 			item.y = place.y;
 			item.lockPosition();
-			// This is wrong. You can drop it on two places
-			//trace("Item "+item.getName()+" dropped on place "+ place.getName());
 			item.setPlaced(true);
 			place.setOccupied(true);
 			place.setPlacedItem(item.getName());
@@ -144,21 +142,63 @@ class PlayState extends FlxState
 		//a random selection of the nine items, 
 		//and nine items which the user will click on
 		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
-		altar = new Altar(300, 300, allItems);
+		altar = new Altar(272, 332, allItems);
 		levelSprites.add(altar);
 		for (place in altar.placeGroup)
 			characterSprites.add(place);
 		currentItem = null;
 		FlxG.plugins.add(new MouseEventManager());
-		items = [for (i in (0...9)) new Item(300+50*i, 450, colors[i], allItems[i])];
+		for(i in(0...9)) {
+			if(i<5) {
+				items.push(new Item(198+84*i, 446, allItems[i]));
+			}
+			else {
+				items.push(new Item(238+84*(i-5), 514, allItems[i]));
+			}
+		}
 		for(item in items) {
 			MouseEventManager.add(item, drag, drop);
+			characterSprites.add(new LevelObject(item.x, item.y, "item_ring.png", 64, 64));
+			characterSprites.add(new LevelObject(item.x+9, item.y+23, "item_shadow.png", 46, 28));
 			characterSprites.add(item);
 		}
 
 		// Add other level sprites
-		var hutsSprite = new LevelObject("huts.png", 402, 202);
+		var hutsSprite = new LevelObject(196, 110, "huts.png", 402, 202);
 		levelSprites.add(hutsSprite);
+		var cropsSprite = new LevelObject(692, 220, "crops.png", 104, 120);
+		levelSprites.add(cropsSprite);
+		var sheepSprite = new LevelObject(0, 212, "sheep.png", 176, 110);
+		levelSprites.add(sheepSprite);
+		var fenceSprite = new LevelObject(0, 212, "fence.png", 176, 110);
+		levelSprites.add(fenceSprite);
+		var riverSprite = new LevelObject(650, 216, "river.png", 150, 200);
+		levelSprites.add(riverSprite);
+		var leftVillager = new LevelObject(244, 206, "villager_small.png", 30, 76);
+		levelSprites.add(leftVillager);
+		var rightVillager = new LevelObject(528, 220, "villager_small.png", 30, 76, true);
+		levelSprites.add(rightVillager);
+		var bigVillager = new LevelObject(560, 222, "villager_nude.png", 62, 136, true);
+		levelSprites.add(bigVillager);
+		var leader = new LevelObject(170, 182, "villager_tribal.png", 58, 142);
+		levelSprites.add(leader);
+		// Altar: 136, 166
+		// Crops: 346, 110
+		// Sheep: 0, 106
+		// Fence: 0,, 106
+		// Left small villager: 122, 103
+		// Right small villager: 264, 111
+		// Big villager: 280, 111
+		// Leader: 85, 91
+		// River: 325, 108
+
+		// Item 0: 99, 223
+		// Item 1: 141, 223 (99+42)
+		// Item 2: 183, 223 
+		// Item 3: 225, 223 
+		// Item 4: 267, 223 
+		// Item 5: 119, 257
+		
 
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
