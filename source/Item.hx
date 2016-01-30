@@ -7,7 +7,7 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flash.events.EventDispatcher;
 
-class Item extends FlxSprite
+class Item extends LevelObject
 {
 	private var name:String;
 
@@ -18,7 +18,7 @@ class Item extends FlxSprite
 	private var offsetX:Float;
 	private var offsetY:Float;
 	private var placed:Bool;
-	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE, name:String="unknown") {
+	public function new(X:Float=0, Y:Float=0, name:String="unknown") {
 		placed = false;
 		originX = X;
 		originY = Y;
@@ -27,8 +27,7 @@ class Item extends FlxSprite
 		offsetX = 0;
 		offsetY = 0;
 		this.name = name;
-		super(X, Y);
-		makeGraphic(32, 32, color);
+		super(X, Y, name+".png", 64, 64);
 	}
 	public function setOffsetX(x:Float):Void {
 		this.offsetX = x;
