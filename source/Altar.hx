@@ -7,6 +7,7 @@ package;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxRandom;
+import flixel.group.FlxTypedGroup;
 
 class Altar extends FlxSprite
 {
@@ -23,11 +24,19 @@ class Altar extends FlxSprite
 		"skull"
 	];
 
+	private var places:Array<FlxSprite>;
+	public var placeGroup:FlxTypedGroup<FlxSprite>;
 	public function new(X:Float=0, Y:Float=0) {
 		sequence = initSequence();
 		trace(sequence);
+		places = [for(i in (1...5)) new FlxSprite(300+50*i, 350)];
+		placeGroup = new FlxTypedGroup();
 		super(X, Y);
 		makeGraphic(300, 100, FlxColor.BLUE);
+		for(place in places) {
+			place.makeGraphic(32, 32, FlxColor.AZURE);
+			placeGroup.add(place);
+		}
 	}
 
 	private function initSequence():Array<String> {
