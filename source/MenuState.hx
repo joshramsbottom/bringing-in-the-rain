@@ -24,9 +24,9 @@ class MenuState extends FlxState
 	 */
 	override public function create():Void
 	{
-		_textIntro = new FlxText(300, 300, 0, "Bringing In The Rain", 20);
+		_textIntro = new FlxText(150, 150, 0, "Bringing In The Rain", 10);
 		add(_textIntro);
-		_btnPlay = new FlxButton(350, 400, "Play", clickPlay);
+		_btnPlay = new FlxButton(175, 200, "Play", clickPlay);
 		add(_btnPlay);
 		super.create();
 	}

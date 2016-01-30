@@ -12,7 +12,7 @@ class Place extends FlxSprite {
 		occupied = false;
 		this.placeName = placeName;
 		super(X, Y);
-		setGraphicSize(64, 64);
+		setGraphicSize(32, 32);
 	}
 	public function getName():String {
 		return placeName;

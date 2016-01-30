@@ -24,9 +24,9 @@ class WinState extends FlxState
 	 */
 	override public function create():Void
 	{
-		_winText = new FlxText(300, 300, 300, "The Gods are happy with your sacrifice. You get double rainbows and your crops prosper. You win.", 20);
+		_winText = new FlxText(150, 150, 150, "The Gods are happy with your sacrifice. You get double rainbows and your crops prosper. You win.", 10);
 		add(_winText);
-		_btnPlay = new FlxButton(350, 500, "Play again", clickPlay);
+		_btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
 		add(_btnPlay);
 		super.create();
 	}
