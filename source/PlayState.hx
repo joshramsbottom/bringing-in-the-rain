@@ -9,6 +9,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
 import flixel.util.FlxColor;
+import flixel.util.FlxRandom;
 import flixel.plugin.MouseEventManager;
 import flash.events.MouseEvent;
 
@@ -35,29 +36,53 @@ class PlayState extends FlxState
 		"idol",
 		"skull"
 	];
+	private var rain:Array<String> = [
+		"no rain",
+		"drizzle",
+		"light rain",
+		"medium rain",
+		"lots of rain!"
+	];
+	private var plagueCount:Int = 0;
+	private var plagues:Array<String> = [
+		"Frogs rain from the skies.",
+		"Locusts ravage your crops.",
+		"The river floods, washing away your homes.",
+		"The river turns to blood.",
+		"There is an earthquake. Your houses crumble to dust",
+		"There is a tornado. Your houses are blown away",
+		"Pestilence ravages your village.",
+		"Wolves attack your village.",
+		"A rival village raids your crops.",
+		"An arrow shoots down your greatest warrior",
+		"An alien abducts your firstborn"
+	];
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
+			trace(item.getName());
 			currentItem = item;
 			currentItem.setOffsetX(FlxG.mouse.x-currentItem.x);
 			currentItem.setOffsetY(FlxG.mouse.y-currentItem.y);
 		}
 	}
 	private function drop(item:Item):Void {
-		// Check if the item is over the altar and only drop then
+		// Check if the item is over the altar and only then do we drop it
 		if(!FlxG.overlap(item, altar.placeGroup, snapItem)) {
 			item.revertPosition();
 		}
 		currentItem = null;
 	}
-	private function snapItem(item:Item, place:Place) {
+	private function snapItem(item:Item, place:Place):Void {
 		if(!place.getOccupied()) {
 			item.x = place.x;
 			item.y = place.y;
 			item.lockPosition();
-			trace("Item "+item.getName()+" dropped on place "+ place.getName());
+			// This is wrong. You can drop it on two places
+			//trace("Item "+item.getName()+" dropped on place "+ place.getName());
 			item.setPlaced(true);
 			place.setOccupied(true);
+			place.setPlacedItem(item.getName());
 			MouseEventManager.remove(item);
 		} else {
 			item.revertPosition();
@@ -67,13 +92,47 @@ class PlayState extends FlxState
 	private function guessCallback() {
 		var placedCount:Int = 0;
 		for (item in items) {
-			if (item.getPlaced())
+			if (item.getPlaced()) {
 				placedCount ++;
+			}
 		}
-		if (placedCount < 4)
+		if (placedCount < 4) {
 			FlxG.camera.shake(0.01, 0.05, FlxCamera.SHAKE_HORIZONTAL_ONLY);
-		else
-			trace(altar.checkGuess());
+		}
+		else {
+			// The first number is the correct items. The second number is the items in the wrong order
+			var guess:Array<Int> = altar.checkGuess();
+			var correctItems:Int = guess[0];
+			var wrongOrder:Int = guess[1];
+			trace(correctItems+" item"+(if(correctItems==1)""else"s")+" correct, "+wrongOrder+" item"+(if(wrongOrder==1)""else"s")+" in the wrong order");
+			// The win condition is when there are 4 correct items and none in the wrong order (rain, double rainbows, and growing crops)
+			// The more correct items there are, the more rain there is
+			// If there are items in the wrong order, something bad happens
+			// If all the bad things happen, the Gods get angry with you and your village gets destroyed
+			trace(rain[correctItems]);
+			if(wrongOrder==0) {
+				FlxG.switchState(new WinState());
+			}
+			else {
+				trace(badStuff());
+				plagueCount++;
+				if(plagueCount >= 4) { // Set this to something like 15
+					FlxG.switchState(new LoseState());
+				}
+			}
+			//trace(altar.checkGuess());
+			clearAltar();
+		}
+	}
+	private function badStuff():String {
+		return FlxRandom.getObject(plagues);
+	}
+	private function clearAltar():Void {
+		altar.clear();
+		for(item in items) {
+			item.clear();
+			MouseEventManager.add(item, drag, drop);
+		}
 	}
 
 	/**

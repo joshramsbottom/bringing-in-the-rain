@@ -51,14 +51,21 @@ class Altar extends FlxSprite
 	public function checkGuess():Array<Int> {
 		var totalRightItems:Int = 0;
 		var wrongOrderItems:Int = 0;
+		trace(sequence);
 
 		for (place in places) {
 			var placedItem:String = place.getPlacedItem();
+			trace(placedItem, place.getName());
 			if (sequence.indexOf(placedItem) != -1)
 				totalRightItems ++;
 			if (placedItem != place.getName())
 				wrongOrderItems ++;
 		}
 		return [totalRightItems, wrongOrderItems];
+	}
+	public function clear():Void {
+		for(place in places) {
+			place.clear();
+		}
 	}
 }
