@@ -142,7 +142,7 @@ class PlayState extends FlxState
 		//a random selection of the nine items, 
 		//and nine items which the user will click on
 		colors = [0xffff0000, 0xffffdd00, 0xffffff00, 0xffddff00, 0xff00ff00, 0xff00ffff, 0xff00ddff, 0xff0000ff, 0xffdd00ff, 0xffff00ff];
-		altar = new Altar(272, 332, allItems);
+		altar = new Altar(136, 166, allItems);
 		levelSprites.add(altar);
 		for (place in altar.placeGroup)
 			characterSprites.add(place);
@@ -150,37 +150,37 @@ class PlayState extends FlxState
 		FlxG.plugins.add(new MouseEventManager());
 		for(i in(0...9)) {
 			if(i<5) {
-				items.push(new Item(198+84*i, 446, allItems[i]));
+				items.push(new Item(99+42*i, 223, allItems[i]));
 			}
 			else {
-				items.push(new Item(238+84*(i-5), 514, allItems[i]));
+				items.push(new Item(119+42*(i-5), 257, allItems[i]));
 			}
 		}
 		for(item in items) {
 			MouseEventManager.add(item, drag, drop);
-			characterSprites.add(new LevelObject(item.x, item.y, "item_ring.png", 64, 64));
-			characterSprites.add(new LevelObject(item.x+9, item.y+23, "item_shadow.png", 46, 28));
+			characterSprites.add(new LevelObject(item.x, item.y, "item_ring.png", 32, 32));
+			characterSprites.add(new LevelObject(item.x+4, item.y+12, "item_shadow.png", 23, 14));
 			characterSprites.add(item);
 		}
 
 		// Add other level sprites
-		var hutsSprite = new LevelObject(196, 110, "huts.png", 402, 202);
+		var hutsSprite = new LevelObject(98, 55, "huts.png", 201, 101);
 		levelSprites.add(hutsSprite);
-		var cropsSprite = new LevelObject(692, 220, "crops.png", 104, 120);
+		var cropsSprite = new LevelObject(346, 110, "crops.png", 52, 60);
 		levelSprites.add(cropsSprite);
-		var sheepSprite = new LevelObject(0, 212, "sheep.png", 176, 110);
+		var sheepSprite = new LevelObject(0, 106, "sheep.png", 88, 55);
 		levelSprites.add(sheepSprite);
-		var fenceSprite = new LevelObject(0, 212, "fence.png", 176, 110);
+		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
-		var riverSprite = new LevelObject(650, 216, "river.png", 150, 200);
+		var riverSprite = new LevelObject(325, 108, "river.png", 75, 100);
 		levelSprites.add(riverSprite);
-		var leftVillager = new LevelObject(244, 206, "villager_small.png", 30, 76);
+		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
 		levelSprites.add(leftVillager);
-		var rightVillager = new LevelObject(528, 220, "villager_small.png", 30, 76, true);
+		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
 		levelSprites.add(rightVillager);
-		var bigVillager = new LevelObject(560, 222, "villager_nude.png", 62, 136, true);
+		var bigVillager = new LevelObject(280, 111, "villager_nude.png", 31, 68, true);
 		levelSprites.add(bigVillager);
-		var leader = new LevelObject(170, 182, "villager_tribal.png", 58, 142);
+		var leader = new LevelObject(85, 91, "villager_tribal.png", 29, 71);
 		levelSprites.add(leader);
 		// Altar: 136, 166
 		// Crops: 346, 110
@@ -203,7 +203,7 @@ class PlayState extends FlxState
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
 		bgSprite.loadGraphic("assets/images/background.png");
-		bgSprite.setGraphicSize(800, 600);
+		bgSprite.setGraphicSize(400, 300);
 		bgSprite.updateHitbox();
 
 		// Add sprites in correct order
@@ -211,7 +211,7 @@ class PlayState extends FlxState
 		add(levelSprites);
 		add(characterSprites);
 
-		var guessButton:FlxButton = new FlxButton(700, 500, "Sacrifice", guessCallback);
+		var guessButton:FlxButton = new FlxButton(320, 250, "Sacrifice", guessCallback);
 		add(guessButton);
 
 		super.create();

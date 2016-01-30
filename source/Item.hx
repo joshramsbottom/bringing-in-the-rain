@@ -27,7 +27,7 @@ class Item extends LevelObject
 		offsetX = 0;
 		offsetY = 0;
 		this.name = name;
-		super(X, Y, name+".png", 64, 64);
+		super(X, Y, name+".png", 32, 32);
 	}
 	public function setOffsetX(x:Float):Void {
 		this.offsetX = x;
