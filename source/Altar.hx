@@ -4,6 +4,7 @@
 // Otherwise, things die
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxRandom;
@@ -22,7 +23,13 @@ class Altar extends FlxSprite
 		places = [for(i in (0...4)) new Place(350+50*i, 350, sequence[i])];
 		placeGroup = new FlxTypedGroup();
 		super(X, Y);
-		makeGraphic(300, 100, FlxColor.BLUE);
+
+		loadGraphic("assets/images/altar.png");
+		setGraphicSize(256, 98);
+		updateHitbox();
+		this.x = 400 - this.width/2;
+		this.y = 400 - this.height/2;
+
 		for(place in places) {
 			placeGroup.add(place);
 		}
