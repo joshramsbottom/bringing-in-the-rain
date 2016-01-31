@@ -30,6 +30,10 @@ class PlayState extends FlxState
 	private var raindrops:Array<Raindrop>;
 	private var currentItem:Item;
 	private var godlyRays:TiledLevelObject;
+	private var bigVillager:TiledLevelObject;
+	private var leader:TiledLevelObject;
+	private var rainbow:TiledLevelObject;
+	private var hutFire:TiledLevelObject;
 	private var allItems:Array<String> = [
 		"first_born",
 		"idol",
@@ -134,7 +138,9 @@ class PlayState extends FlxState
 			// If all the bad things happen, the Gods get angry with you and your village gets destroyed
 			createRain(correctItems);
 			if(wrongOrder==0) {
-				FlxG.switchState(new WinState());
+				rainbow.animation.play("win");
+				rainbow.visible = true;
+				//FlxG.switchState(new WinState());
 			}
 			else {
 				badStuff();
@@ -161,7 +167,9 @@ class PlayState extends FlxState
 	private function checkBadThing(timer:FlxTimer):Void {
 		plagueCount++;
 		if(plagueCount >= 8) {
-			FlxG.switchState(new LoseState());
+			bigVillager.animation.play("giveup");
+			leader.animation.play("giveup");
+			hutFire.visible = true;
 		}
 		var chosenEffect:EffectObject = FlxRandom.getObject(badThings);
 		chosenEffect.play("anim");
@@ -169,7 +177,7 @@ class PlayState extends FlxState
 			var shakeTimer = new FlxTimer();
 			shakeTimer.start(1, keepShaking, 3);
 		}
-		badThings.remove(chosenEffect);
+		//badThings.remove(chosenEffect);
 	}
 	private function badStuff():Void {
 		// altar + (3, 32)
@@ -223,9 +231,24 @@ class PlayState extends FlxState
 		}
 
 		// Add other level sprites
+		rainbow = new TiledLevelObject(130, 26, "rainbow.png", 147, 85);
+		rainbow.animation.add("win", [0,1,2,3,4,5,6,7,8,9,10,11], 6, false);
+		rainbow.visible = false;
+		levelSprites.add(rainbow);
+
 		var hutsSprite = new LevelObject(98, 56, "huts.png", 201, 101);
 		levelSprites.add(hutsSprite);
-		var cropsSprite = new LevelObject(346, 110, "crops.png", 52, 60);
+
+		hutFire = new TiledLevelObject(90, 45, "fire.png", 215, 86);
+		hutFire.animation.add("lose", [0,1,2,3], 6, true);
+		hutFire.animation.play("lose");
+		hutFire.visible = false;
+		levelSprites.add(hutFire);
+
+		var cropsSprite = new EffectObject(346, 94, 346, 94, "swarm", "locust_swarm.png", 59, 81);
+		cropsSprite.frame = cropsSprite.framesData.frames[0];
+		cropsSprite.animation.add("anim", [for (i in (1...24)) i], 8, false);
+		badThings.push(cropsSprite);
 		levelSprites.add(cropsSprite);
 
 		var sheepSprite = new EffectObject(0, 72, 0, 72, "sheep", "sheep.png", 88, 108);
@@ -235,19 +258,28 @@ class PlayState extends FlxState
 		levelSprites.add(sheepSprite);
 		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
-		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
+		var leftVillager = new TiledLevelObject(122, 103, "villager_small.png", 29, 38);
 		levelSprites.add(leftVillager);
 
-		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
+		var rightVillager = new TiledLevelObject(264, 110, "villager_small.png", 29, 38, true);
 		levelSprites.add(rightVillager);
 
-		var bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
+		bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
 		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
+		bigVillager.animation.add("giveup", [for(i in (40...52)) i], 12, false);
 		levelSprites.add(bigVillager);
 		bigVillager.animation.play("idle");
 
-		var leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
+		leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
 		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
+		leader.animation.add("giveup", [for(i in (40...52)) i], 12, false);
+
+		var ufo = new EffectObject(0, 20, 0, 20, "ufo", "ufo.png", 121, 101);
+		ufo.frame = ufo.framesData.frames[0];
+		ufo.animation.add("anim", [for (i in (0...38)) i], 10, false);
+		badThings.push(ufo);
+		levelSprites.add(ufo);
+
 		levelSprites.add(leader);
 		leader.animation.play("idle");
 
@@ -256,6 +288,9 @@ class PlayState extends FlxState
 		godlyRays.animation.play("sparkle");
 		characterSprites.add(godlyRays);
 		godlyRays.kill();
+
+		
+
 		// Altar: 136, 166
 		// Crops: 346, 110
 		// Sheep: 0, 106
