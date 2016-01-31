@@ -164,6 +164,15 @@ class PlayState extends FlxState
 		}
 	}
 
+	private function keepShaking(timer:FlxTimer):Void {
+		FlxG.camera.shake(shakeIntensity, 0.2, FlxCamera.SHAKE_HORIZONTAL_ONLY);
+		shakeIntensity += 0.01;
+	}
+	private function clickPlay():Void {
+		FlxG.switchState(new PlayState());
+	}
+
+
 	private function updateClouds(correct:Int, wrongOrder:Int) {
 		if (correct == 0)
 		{
@@ -213,6 +222,10 @@ class PlayState extends FlxState
 			bigVillager.animation.play("giveup");
 			leader.animation.play("giveup");
 			hutFire.visible = true;
+			var _loseText = new FlxText(150, 150, 150, "The Gods are angry with your sacrifice. Your village burns to the ground. Blood rains from the skies and the sharknado destroys your crops. You die.", 10);
+			add(_loseText);
+			var _btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
+			add(_btnPlay);
 		}
 		var chosenEffect:EffectObject = FlxRandom.getObject(badThings);
 		chosenEffect.play("anim");
