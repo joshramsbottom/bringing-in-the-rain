@@ -11,6 +11,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.util.FlxRandom;
+import flixel.tweens.FlxTween;
 import flixel.plugin.MouseEventManager;
 import flash.events.MouseEvent;
 
@@ -54,7 +55,10 @@ class PlayState extends FlxState
 		"An arrow shoots down your greatest warrior",
 		"An alien abducts your firstborn"
 	];*/
+	private var clouds:Array<LevelObject> = [];
 	private var shakeIntensity:Float = 0.03;
+	private var rainState:Int = 0;
+	private var stormState:Int = 2;
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
@@ -130,6 +134,7 @@ class PlayState extends FlxState
 			// If there are items in the wrong order, something bad happens
 			// If all the bad things happen, the Gods get angry with you and your village gets destroyed
 			createRain(correctItems);
+			updateClouds(correctItems, wrongOrder);
 			if(wrongOrder==0) {
 				FlxG.switchState(new WinState());
 			}
@@ -154,6 +159,44 @@ class PlayState extends FlxState
 			raindrops[i].reset(FlxRandom.intRanged(0, 400), FlxRandom.intRanged(0, 300));
 			raindrops[i].animation.play("land");
 		}
+	}
+
+	private function updateClouds(correct:Int, wrongOrder:Int) {
+		if (correct == 0)
+		{
+			for (i in 0...3) {
+				FlxTween.linearMotion(clouds[i], clouds[i].x, clouds[i].y, clouds[i].x, -30, 1);
+			}
+		}
+		if (rainState == 0 && correct > 0)
+		{
+			for (i in 0...3) {
+				FlxTween.linearMotion(clouds[i], clouds[i].x, clouds[i].y, clouds[i].x, -10 + (i*10), 1);
+			}
+		}
+
+		var change:Int = cast(Math.abs(stormState - wrongOrder), Int);
+		if (wrongOrder > stormState) {
+			for (cloud in clouds) {
+				FlxTween.color(cloud, 2, cloud.color, darken(cloud.color, change));
+			}
+		}
+		else if (wrongOrder < stormState) {
+			for (cloud in clouds) {
+				FlxTween.color(cloud, 2, cloud.color, lighten(cloud.color, change));
+			}
+		}
+
+		rainState = correct;
+		stormState = wrongOrder;
+	}
+
+	private function darken(colour:Int, change:Int) {
+		return colour >> change;
+	}
+
+	private function lighten(colour:Int, change:Int) {
+		return colour << change;
 	}
 
 	private function keepShaking(timer:FlxTimer):Void {
@@ -255,6 +298,16 @@ class PlayState extends FlxState
 		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
 		levelSprites.add(leader);
 		leader.animation.play("idle");
+
+		var cloudSprite1 = new LevelObject(-10, -30, "clouds_1.png", 448, 28);
+		clouds.push(cloudSprite1);
+		var cloudSprite2 = new LevelObject(-10, -30, "clouds_2.png", 448, 28, true);
+		clouds.push(cloudSprite2);
+		var cloudSprite3 = new LevelObject(-10, -30, "clouds_3.png", 448, 28);
+		clouds.push(cloudSprite3);
+		effectsSprites.add(cloudSprite3);
+		effectsSprites.add(cloudSprite2);
+		effectsSprites.add(cloudSprite1);
 
 		godlyRays = new TiledLevelObject(0, 0, "god_rays.png", 32, 190);
 		godlyRays.animation.add("sparkle", [0,1,2,3,4,5], 6, true);
