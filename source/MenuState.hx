@@ -29,6 +29,8 @@ class MenuState extends FlxState
 		_btnPlay = new FlxButton(175, 200, "Play", clickPlay);
 		//add(_btnPlay);
 		var tabletSprite = new LevelObject("tablet_large.png", 324, 264);
+		tabletSprite.x = 36;
+		tabletSprite.y = 20;
 		add(tabletSprite);
 		super.create();
 	}
