@@ -55,6 +55,7 @@ class PlayState extends FlxState
 		"An arrow shoots down your greatest warrior",
 		"An alien abducts your firstborn"
 	];*/
+	private var shakeIntensity:Float = 0.03;
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
@@ -148,12 +149,24 @@ class PlayState extends FlxState
 			raindrops[i].play();
 		}
 	}
+
+	private function keepShaking(timer:FlxTimer):Void {
+		FlxG.camera.shake(shakeIntensity, 0.2, FlxCamera.SHAKE_HORIZONTAL_ONLY);
+		shakeIntensity += 0.01;
+	}
+
 	private function checkBadThing(timer:FlxTimer):Void {
 		plagueCount++;
 		if(plagueCount >= 8) {
 			FlxG.switchState(new LoseState());
 		}
-		FlxRandom.getObject(badThings).play("anim");
+		var chosenEffect:EffectObject = FlxRandom.getObject(badThings);
+		chosenEffect.play("anim");
+		if (chosenEffect.getName() == "earthquake") {
+			var shakeTimer = new FlxTimer();
+			shakeTimer.start(1, keepShaking, 3);
+		}
+		badThings.remove(chosenEffect);
 	}
 	private function badStuff():Void {
 		// altar + (3, 32)
@@ -164,7 +177,7 @@ class PlayState extends FlxState
 		// This is very slightly off.
 		var altarBlood = new TiledLevelObject(x+14.8*plagueCount, y, "altar_blood.png", 16, 16);
 		altarBlood.animation.add("spill", [for (i in (0...17)) i], 17, false);
-		characterSprites.add(altarBlood);
+		levelSprites.add(altarBlood);
 		altarBlood.animation.play("spill");
 		// Wait 1s for the animation to complete
 		var timer = new FlxTimer(1, checkBadThing);
@@ -207,22 +220,34 @@ class PlayState extends FlxState
 		}
 
 		// Add other level sprites
-		var hutsSprite = new LevelObject(98, 55, "huts.png", 201, 101);
+		var hutsSprite = new LevelObject(98, 56, "huts.png", 201, 101);
 		levelSprites.add(hutsSprite);
 		var cropsSprite = new LevelObject(346, 110, "crops.png", 52, 60);
 		levelSprites.add(cropsSprite);
-		var sheepSprite = new LevelObject(0, 106, "sheep.png", 88, 55);
+
+		var sheepSprite = new EffectObject(0, 72, 0, 72, "sheep", "sheep.png", 88, 108);
+		sheepSprite.frame = sheepSprite.framesData.frames[0];
+		sheepSprite.animation.add("anim", [for (i in (1...38)) i], 8, false);
+		badThings.push(sheepSprite);
 		levelSprites.add(sheepSprite);
 		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
 		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
 		levelSprites.add(leftVillager);
+
 		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
 		levelSprites.add(rightVillager);
-		var bigVillager = new LevelObject(280, 111, "villager_nude.png", 31, 68, true);
+
+		var bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
+		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
 		levelSprites.add(bigVillager);
-		var leader = new LevelObject(85, 91, "villager_tribal.png", 29, 71);
+		bigVillager.animation.play("idle");
+
+		var leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
+		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
 		levelSprites.add(leader);
+		leader.animation.play("idle");
+
 		godlyRays = new TiledLevelObject(0, 0, "god_rays.png", 32, 190);
 		godlyRays.animation.add("sparkle", [0,1,2,3,4,5], 6, true);
 		godlyRays.animation.play("sparkle");
@@ -246,17 +271,23 @@ class PlayState extends FlxState
 		// Item 5: 119, 257
 
 		// Add effects sprites
-		var riverSprite = new EffectObject(325, 108, 325, 108, 1, "river.png", 75, 100);
+		var riverSprite = new EffectObject(325, 108, 325, 108, "river", 1, "river.png", 75, 100);
 		riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
-		riverSprite.animation.add("anim", [3,2,1,0], 4, false);
+		riverSprite.animation.add("anim", [3,2,1,0], 1, false);
 		badThings.push(riverSprite);
 		effectsSprites.add(riverSprite);
-		var tornado = new EffectObject(390, 17, -80, 17, 6, "tornado.png", 83, 119, "wind");
+
+		var tornado = new EffectObject(390, 10, -80, 10, "tornado", 6, "tornado.png", 83, 119, "wind");
 		tornado.animation.add("anim", [0,1,2,3,4], 10, true);
 		tornado.kill();
 		effectsSprites.add(tornado);
 		badThings.push(tornado);
-		
+
+		var earthquake = new EffectObject(50, 205, 50, 205, "earthquake", "fissure_crack.png", 40, 94);
+		earthquake.animation.add("anim", [0,1,2,3], 1, false);
+		earthquake.kill();
+		effectsSprites.add(earthquake);
+		badThings.push(earthquake);
 
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
