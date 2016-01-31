@@ -211,8 +211,8 @@ class PlayState extends FlxState
 		}
 		else if (wrongOrder == 0) {
 			FlxTween.color(clouds[0], 2, clouds[0].color, 0xFFFFFF);
-			FlxTween.color(clouds[1], 2, clouds[1].color, 0xD6D6D6);
-			FlxTween.color(clouds[2], 2, clouds[2].color, 0xADADAD);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0xFFFFFF);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0xFFFFFF);
 		}
 
 		rainState = correct;
