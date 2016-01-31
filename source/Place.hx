@@ -12,9 +12,10 @@ class Place extends FlxSprite {
 		occupied = false;
 		this.placeName = placeName;
 		super(X, Y);
+		//makeGraphic(32, 32);
 		setGraphicSize(32, 32);
 		updateHitbox();
-		offset.set(-32, 0);
+		//offset.set(-32, 0);
 	}
 	public function getName():String {
 		return placeName;

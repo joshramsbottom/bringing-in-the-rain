@@ -86,24 +86,26 @@ class PlayState extends FlxState
 		currentItem = null;
 	}
 	private function snapItem(item:Item, place:Place):Void {
-		if(!place.getOccupied() && !item.getPlaced()) {
-			item.x = place.x;
-			item.y = place.y;
-			item.lockPosition();
-			item.setPlaced(true);
-			place.setOccupied(true);
-			place.setPlacedItem(item.getName());
-			MouseEventManager.remove(item);
+		if(FlxG.pixelPerfectOverlap(place, item)) {
+			if(!place.getOccupied() && !item.getPlaced()) {
+				item.x = place.x;
+				item.y = place.y;
+				item.lockPosition();
+				item.setPlaced(true);
+				place.setOccupied(true);
+				place.setPlacedItem(item.getName());
+				MouseEventManager.remove(item);
+			}
 		} else {
 			item.revertPosition();
 		}
 		godlyRays.kill();
 	}
 	private function toggleGodlyRays(item:Item, place:Place):Void {
-		// This may not be 100%
-		// The place's hitbox seems off
-		if(!place.getOccupied() && !item.getPlaced()) {
-			godlyRays.reset(place.x, place.y-190+22);
+		if(FlxG.pixelPerfectOverlap(place, item)) {
+			if(!place.getOccupied() && !item.getPlaced()) {
+				godlyRays.reset(place.x, place.y-190+22);
+			}
 		}
 		else {
 			godlyRays.kill();
