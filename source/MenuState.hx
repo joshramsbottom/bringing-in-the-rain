@@ -25,9 +25,11 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		_textIntro = new FlxText(150, 150, 0, "Bringing In The Rain", 10);
-		add(_textIntro);
+		//add(_textIntro);
 		_btnPlay = new FlxButton(175, 200, "Play", clickPlay);
-		add(_btnPlay);
+		//add(_btnPlay);
+		var tabletSprite = new LevelObject("tablet_large.png", 324, 264);
+		add(tabletSprite);
 		super.create();
 	}
 	
@@ -47,6 +49,8 @@ class MenuState extends FlxState
 	 */
 	override public function update():Void
 	{
+		if (FlxG.keys.justPressed.ANY)
+			FlxG.switchState(new PlayState());
 		super.update();
 	}	
 }
