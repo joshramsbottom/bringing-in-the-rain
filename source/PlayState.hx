@@ -35,6 +35,7 @@ class PlayState extends FlxState
 	private var leader:TiledLevelObject;
 	private var rainbow:TiledLevelObject;
 	private var hutFire:TiledLevelObject;
+	private var lightning:EffectObject;
 	private var allItems:Array<String> = [
 		"first_born",
 		"idol",
@@ -243,6 +244,9 @@ class PlayState extends FlxState
 			shakeTimer.start(1, keepShaking, 3);
 		}
 		badThings.remove(chosenEffect);
+		if(badThings.length==0) {
+			badThings.push(lightning);
+		}
 	}
 	private function badStuff():Void {
 		// altar + (3, 32)
@@ -408,11 +412,10 @@ class PlayState extends FlxState
 		effectsSprites.add(frog);
 		badThings.push(frog);
 
-		var lightning = new EffectObject(206, 12, 206, 12, "lightning", 0.5, "lightning_bolt.png", 31, 92);
+		lightning = new EffectObject(206, 12, 206, 12, "lightning", 0.5, "lightning_bolt.png", 31, 92);
 		lightning.kill();
 		lightning.animation.add("anim", [0, 1], 2, true);
 		effectsSprites.add(lightning);
-		badThings.push(lightning);
 
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
