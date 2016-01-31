@@ -189,16 +189,30 @@ class PlayState extends FlxState
 			}
 		}
 
-		var change:Int = cast(Math.abs(stormState - wrongOrder), Int);
-		if (wrongOrder > stormState) {
-			for (cloud in clouds) {
-				FlxTween.color(cloud, 2, cloud.color, darken(cloud.color, change));
-			}
+		if (wrongOrder == 4) {
+			FlxTween.color(clouds[0], 2, clouds[0].color, 0xB5B5B5);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0x757575);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0x363636);
 		}
-		else if (wrongOrder < stormState) {
-			for (cloud in clouds) {
-				FlxTween.color(cloud, 2, cloud.color, lighten(cloud.color, change));
-			}
+		else if (wrongOrder ==3) {
+			FlxTween.color(clouds[0], 2, clouds[0].color, 0xC9C9C9);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0x919191);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0x575757);
+		}
+		else if (wrongOrder == 2) {
+			FlxTween.color(clouds[0], 2, clouds[0].color, 0xDEDEDE);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0xADADAD);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0x707070);
+		}
+		else if (wrongOrder == 1) {
+			FlxTween.color(clouds[0], 2, clouds[0].color, 0xEBEBEB);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0xBDBDBD);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0x8F8F8F);
+		}
+		else if (wrongOrder == 0) {
+			FlxTween.color(clouds[0], 2, clouds[0].color, 0xFFFFFF);
+			FlxTween.color(clouds[1], 2, clouds[1].color, 0xD6D6D6);
+			FlxTween.color(clouds[2], 2, clouds[2].color, 0xADADAD);
 		}
 
 		rainState = correct;
