@@ -61,7 +61,7 @@ class PlayState extends FlxState
 		"An alien abducts your firstborn"
 	];*/
 	private var clouds:Array<LevelObject> = [];
-	private var shakeIntensity:Float = 0.03;
+	private var shakeIntensity:Float = 0.02;
 	private var rainState:Int = 0;
 	private var stormState:Int = 2;
 	private function drag(item:Item):Void {
