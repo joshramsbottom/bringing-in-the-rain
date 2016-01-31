@@ -30,6 +30,8 @@ class PlayState extends FlxState
 	private var raindrops:Array<Raindrop>;
 	private var currentItem:Item;
 	private var godlyRays:TiledLevelObject;
+	private var bigVillager:TiledLevelObject;
+	private var leader:TiledLevelObject;
 	private var allItems:Array<String> = [
 		"first_born",
 		"idol",
@@ -161,7 +163,9 @@ class PlayState extends FlxState
 	private function checkBadThing(timer:FlxTimer):Void {
 		plagueCount++;
 		if(plagueCount >= 8) {
-			FlxG.switchState(new LoseState());
+			//FlxG.switchState(new LoseState());
+			bigVillager.animation.play("giveup");
+			leader.animation.play("giveup");
 		}
 		var chosenEffect:EffectObject = FlxRandom.getObject(badThings);
 		chosenEffect.play("anim");
@@ -169,7 +173,7 @@ class PlayState extends FlxState
 			var shakeTimer = new FlxTimer();
 			shakeTimer.start(1, keepShaking, 3);
 		}
-		badThings.remove(chosenEffect);
+		//badThings.remove(chosenEffect);
 	}
 	private function badStuff():Void {
 		// altar + (3, 32)
@@ -235,19 +239,21 @@ class PlayState extends FlxState
 		levelSprites.add(sheepSprite);
 		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
-		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
+		var leftVillager = new TiledLevelObject(122, 103, "villager_small.png", 29, 38);
 		levelSprites.add(leftVillager);
 
-		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
+		var rightVillager = new TiledLevelObject(264, 110, "villager_small.png", 29, 38, true);
 		levelSprites.add(rightVillager);
 
-		var bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
+		bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
 		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
+		bigVillager.animation.add("giveup", [for(i in (40...52)) i], 12, false);
 		levelSprites.add(bigVillager);
 		bigVillager.animation.play("idle");
 
-		var leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
+		leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
 		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
+		leader.animation.add("giveup", [for(i in (40...52)) i], 12, false);
 		levelSprites.add(leader);
 		leader.animation.play("idle");
 
