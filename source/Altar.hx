@@ -19,14 +19,14 @@ class Altar extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, itemNames:Array<String>) {
 		allItems = itemNames;
 		sequence = initSequence();
-		//trace(sequence);
+		trace(sequence);
 		super(X, Y);
 
-		places = [for(i in (0...4)) new Place(x+32*i, y, sequence[i])];
+		places = [for(i in (0...4)) new Place(x+32.5*i, y, sequence[i], i+1)];
 		placeGroup = new FlxTypedGroup();
 
 		loadGraphic("assets/images/altar.png");
-		setGraphicSize(128, 49);
+		setGraphicSize(130, 51);
 		updateHitbox();
 
 		for(place in places) {

@@ -11,6 +11,7 @@ import flixel.util.FlxMath;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.util.FlxRandom;
+import flixel.tweens.FlxTween;
 import flixel.plugin.MouseEventManager;
 import flash.events.MouseEvent;
 
@@ -24,11 +25,14 @@ class PlayState extends FlxState
 	private var levelSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var characterSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var effectsSprites:FlxSpriteGroup = new FlxSpriteGroup();
+	private var raindropSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var altar:Altar;
 	private var items:Array<Item> = [];
-	private var raindrops:Array<TiledLevelObject>;
+	private var raindrops:Array<Raindrop>;
 	private var currentItem:Item;
 	private var godlyRays:TiledLevelObject;
+	private var bigVillager:TiledLevelObject;
+	private var leader:TiledLevelObject;
 	private var rainbow:TiledLevelObject;
 	private var hutFire:TiledLevelObject;
 	private var allItems:Array<String> = [
@@ -56,7 +60,10 @@ class PlayState extends FlxState
 		"An arrow shoots down your greatest warrior",
 		"An alien abducts your firstborn"
 	];*/
-	private var shakeIntensity:Float = 0.03;
+	private var clouds:Array<LevelObject> = [];
+	private var shakeIntensity:Float = 0.02;
+	private var rainState:Int = 0;
+	private var stormState:Int = 2;
 	private function drag(item:Item):Void {
 		// If it's not placed, we can drag it around
 		if(!item.getPlaced()) {
@@ -95,18 +102,20 @@ class PlayState extends FlxState
 			place.setOccupied(true);
 			place.setPlacedItem(item.getName());
 			MouseEventManager.remove(item);
-		} else {
+		}
+		else {
 			item.revertPosition();
 		}
 		godlyRays.kill();
 	}
 	private function toggleGodlyRays(item:Item, place:Place):Void {
 		// This may not be 100%
-		// The place's hitbox seems off
+		// The third place seems dodgy
 		if(!place.getOccupied() && !item.getPlaced()) {
 			godlyRays.reset(place.x, place.y-190+22);
 		}
-		else {
+		// We only kill if it's not occupied to avoid a race condition
+		else if(!place.getOccupied()){
 			godlyRays.kill();
 		}
 	}
@@ -132,6 +141,7 @@ class PlayState extends FlxState
 			// If there are items in the wrong order, something bad happens
 			// If all the bad things happen, the Gods get angry with you and your village gets destroyed
 			createRain(correctItems);
+			updateClouds(correctItems, wrongOrder);
 			if(wrongOrder==0) {
 				rainbow.animation.play("win");
 				rainbow.visible = true;
@@ -143,21 +153,62 @@ class PlayState extends FlxState
 			clearAltar();
 		}
 	}
-	private function randomiseRain(t:FlxTimer):Void {
-		for(i in (0...200)) {
-			raindrops[i].x = FlxRandom.intRanged(0, 400);
-			raindrops[i].y = FlxRandom.intRanged(0, 300);
-		}
-		var timer = new FlxTimer(0.5, randomiseRain);
-	}
 	private function createRain(correct:Int):Void {
+		var speeds = [1, 1.5, 2, 4];
 		for(i in (0...200)) {
 			raindrops[i].kill();
 		}
 		for(i in (0...correct*50)) {
-			raindrops[i].reset(FlxRandom.intRanged(0, 400), FlxRandom.intRanged(0, 300));
-			raindrops[i].animation.play("land");
+			raindrops[i].setSpeed(speeds[correct-1]);
+			raindrops[i].play();
 		}
+	}
+
+	private function keepShaking(timer:FlxTimer):Void {
+		FlxG.camera.shake(shakeIntensity, 0.2, FlxCamera.SHAKE_HORIZONTAL_ONLY);
+		shakeIntensity += 0.01;
+	}
+	private function clickPlay():Void {
+		FlxG.switchState(new PlayState());
+	}
+
+
+	private function updateClouds(correct:Int, wrongOrder:Int) {
+		if (correct == 0)
+		{
+			for (i in 0...3) {
+				FlxTween.linearMotion(clouds[i], clouds[i].x, clouds[i].y, clouds[i].x, -30, 1);
+			}
+		}
+		if (rainState == 0 && correct > 0)
+		{
+			for (i in 0...3) {
+				FlxTween.linearMotion(clouds[i], clouds[i].x, clouds[i].y, clouds[i].x, -10 + (i*10), 1);
+			}
+		}
+
+		var change:Int = cast(Math.abs(stormState - wrongOrder), Int);
+		if (wrongOrder > stormState) {
+			for (cloud in clouds) {
+				FlxTween.color(cloud, 2, cloud.color, darken(cloud.color, change));
+			}
+		}
+		else if (wrongOrder < stormState) {
+			for (cloud in clouds) {
+				FlxTween.color(cloud, 2, cloud.color, lighten(cloud.color, change));
+			}
+		}
+
+		rainState = correct;
+		stormState = wrongOrder;
+	}
+
+	private function darken(colour:Int, change:Int) {
+		return colour >> change;
+	}
+
+	private function lighten(colour:Int, change:Int) {
+		return colour << change;
 	}
 
 	private function keepShaking(timer:FlxTimer):Void {
@@ -168,8 +219,13 @@ class PlayState extends FlxState
 	private function checkBadThing(timer:FlxTimer):Void {
 		plagueCount++;
 		if(plagueCount >= 8) {
+			bigVillager.animation.play("giveup");
+			leader.animation.play("giveup");
 			hutFire.visible = true;
-			//FlxG.switchState(new LoseState());
+			var _loseText = new FlxText(150, 150, 150, "The Gods are angry with your sacrifice. Your village burns to the ground. Blood rains from the skies and the sharknado destroys your crops. You die.", 10);
+			add(_loseText);
+			var _btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
+			add(_btnPlay);
 		}
 		var chosenEffect:EffectObject = FlxRandom.getObject(badThings);
 		chosenEffect.play("anim");
@@ -186,7 +242,7 @@ class PlayState extends FlxState
 		var x = altar.x + 4;
 		var y = altar.y + 31;
 		// This is very slightly off.
-		var altarBlood = new TiledLevelObject(x+14.8*plagueCount, y, "altar_blood.png", 16, 16);
+		var altarBlood = new TiledLevelObject(x+15*plagueCount, y, "altar_blood.png", 16, 16);
 		altarBlood.animation.add("spill", [for (i in (0...17)) i], 17, false);
 		levelSprites.add(altarBlood);
 		altarBlood.animation.play("spill");
@@ -256,6 +312,23 @@ class PlayState extends FlxState
 		sheepSprite.animation.add("anim", [for (i in (1...38)) i], 8, false);
 		badThings.push(sheepSprite);
 		levelSprites.add(sheepSprite);
+		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
+		levelSprites.add(fenceSprite);
+		var leftVillager = new TiledLevelObject(122, 103, "villager_small.png", 29, 38);
+		levelSprites.add(leftVillager);
+
+		var rightVillager = new TiledLevelObject(264, 110, "villager_small.png", 29, 38, true);
+		levelSprites.add(rightVillager);
+
+		bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
+		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
+		bigVillager.animation.add("giveup", [for(i in (40...52)) i], 12, false);
+		levelSprites.add(bigVillager);
+		bigVillager.animation.play("idle");
+
+		leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
+		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
+		leader.animation.add("giveup", [for(i in (40...52)) i], 12, false);
 
 		var ufo = new EffectObject(0, 20, 0, 20, "ufo", "ufo.png", 121, 101);
 		ufo.frame = ufo.framesData.frames[0];
@@ -263,24 +336,18 @@ class PlayState extends FlxState
 		badThings.push(ufo);
 		levelSprites.add(ufo);
 
-		//var riverSprite = new TiledLevelObject(325, 108, "river.png", 75, 100);
-		//riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
-		//levelSprites.add(riverSprite);
-		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
-		levelSprites.add(leftVillager);
-
-		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
-		levelSprites.add(rightVillager);
-
-		var bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
-		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
-		levelSprites.add(bigVillager);
-		bigVillager.animation.play("idle");
-
-		var leader = new TiledLevelObject(85, 91, "villager_tribal.png", 48, 96);
-		leader.animation.add("idle", [for (i in (0...40)) i], 5, true);
 		levelSprites.add(leader);
 		leader.animation.play("idle");
+
+		var cloudSprite1 = new LevelObject(-10, -30, "clouds_1.png", 448, 28);
+		clouds.push(cloudSprite1);
+		var cloudSprite2 = new LevelObject(-10, -30, "clouds_2.png", 448, 28, true);
+		clouds.push(cloudSprite2);
+		var cloudSprite3 = new LevelObject(-10, -30, "clouds_3.png", 448, 28);
+		clouds.push(cloudSprite3);
+		effectsSprites.add(cloudSprite3);
+		effectsSprites.add(cloudSprite2);
+		effectsSprites.add(cloudSprite1);
 
 		godlyRays = new TiledLevelObject(0, 0, "god_rays.png", 32, 190);
 		godlyRays.animation.add("sparkle", [0,1,2,3,4,5], 6, true);
@@ -326,6 +393,11 @@ class PlayState extends FlxState
 		effectsSprites.add(earthquake);
 		badThings.push(earthquake);
 
+		var frog = new EffectObject(400, 220, 355, 220, "frog", 0.5, "jumping_frog.png", 20, 32);
+		frog.animation.add("anim", [9,8,7,6,5], 10, false);
+		frog.kill();
+		effectsSprites.add(frog);
+		badThings.push(frog);
 
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
@@ -336,26 +408,21 @@ class PlayState extends FlxState
 		// Add the rain
 		raindrops = [];
 		for(i in (0...200)) {
-			var raindrop = new TiledLevelObject(FlxRandom.intRanged(0, 400), FlxRandom.intRanged(0, 300), "raindrop.png", 16, 16);
-			raindrop.animation.add("land", [0, 1, 2, 3, 4, 5], 12, true);
-			backgroundSprites.add(raindrop);
+			var startX = FlxRandom.intRanged(0, 700);
+			var endY = FlxRandom.intRanged(117, 300);
+			var endX = startX-endY; // The raindrops fall 45 degrees
+			var raindrop = new Raindrop(startX, 0, endX, endY, FlxRandom.floatRanged(1, 4));
+			raindropSprites.add(raindrop);
 			raindrop.kill();
 			raindrops.push(raindrop);
 		}
-		var t = new FlxTimer(0, randomiseRain);
-		// Add a sky sprite
-		// This is above the background sprites so rain doesn't stop in mid air
-		var skySprite:FlxSprite = new FlxSprite();
-		skySprite.loadGraphic("assets/images/sky.png");
-		skySprite.setGraphicSize(400, 300);
-		skySprite.updateHitbox();
 
 		// Add sprites in correct order
 		add(backgroundSprites);
-		add(skySprite);
 		add(effectsSprites);
 		add(levelSprites);
 		add(characterSprites);
+		add(raindropSprites);
 
 		// Add sounds
 		soundManager = new SoundManager();
