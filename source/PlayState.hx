@@ -291,6 +291,12 @@ class PlayState extends FlxState
 		effectsSprites.add(earthquake);
 		badThings.push(earthquake);
 
+		var frog = new EffectObject(400, 220, 355, 220, "frog", 0.5, "jumping_frog.png", 20, 32);
+		frog.animation.add("anim", [9,8,7,6,5,4,3,2,1,0], 10, true);
+		frog.kill();
+		effectsSprites.add(frog);
+		badThings.push(frog);
+
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
 		bgSprite.loadGraphic("assets/images/background.png");
