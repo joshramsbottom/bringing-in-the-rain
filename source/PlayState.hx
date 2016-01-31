@@ -96,12 +96,17 @@ class PlayState extends FlxState
 				place.setPlacedItem(item.getName());
 				MouseEventManager.remove(item);
 			}
+			else {
+				item.revertPosition();
+			}
 		} else {
 			item.revertPosition();
 		}
 		godlyRays.kill();
 	}
 	private function toggleGodlyRays(item:Item, place:Place):Void {
+		// This may not be 100%
+		// The third place seems dodgy
 		if(FlxG.pixelPerfectOverlap(place, item)) {
 			if(!place.getOccupied() && !item.getPlaced()) {
 				godlyRays.reset(place.x, place.y-190+22);
@@ -178,7 +183,7 @@ class PlayState extends FlxState
 		var x = altar.x + 4;
 		var y = altar.y + 31;
 		// This is very slightly off.
-		var altarBlood = new TiledLevelObject(x+14.8*plagueCount, y, "altar_blood.png", 16, 16);
+		var altarBlood = new TiledLevelObject(x+15*plagueCount, y, "altar_blood.png", 16, 16);
 		altarBlood.animation.add("spill", [for (i in (0...17)) i], 17, false);
 		levelSprites.add(altarBlood);
 		altarBlood.animation.play("spill");
