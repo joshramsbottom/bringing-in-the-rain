@@ -106,7 +106,8 @@ class PlayState extends FlxState
 		if(!place.getOccupied() && !item.getPlaced()) {
 			godlyRays.reset(place.x, place.y-190+22);
 		}
-		else {
+		// We only kill if it's not occupied to avoid a race condition
+		else if(!place.getOccupied()){
 			godlyRays.kill();
 		}
 	}
