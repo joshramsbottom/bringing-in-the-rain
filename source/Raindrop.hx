@@ -8,7 +8,7 @@ class Raindrop extends EffectObject {
 
 	private var speed:Float;
 	public function new(X:Float=0, Y:Float=0, endX:Float=0, endY:Float=0, duration:Float=5) {
-		super(X, Y, endX, endY, duration, "raindrop.png", 16, 16);
+		super(X, Y, endX, endY, "", duration, "raindrop.png", 16, 16);
 		animation.add("land", [0, 1, 2, 3, 4, 5], 12, false);
 		speed = 1;
 	}

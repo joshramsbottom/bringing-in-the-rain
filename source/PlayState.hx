@@ -141,11 +141,12 @@ class PlayState extends FlxState
 		}
 	}
 	private function createRain(correct:Int):Void {
+		var speeds = [1, 1.5, 2, 4];
 		for(i in (0...200)) {
 			raindrops[i].kill();
 		}
 		for(i in (0...correct*50)) {
-			raindrops[i].setSpeed(correct);
+			raindrops[i].setSpeed(speeds[correct-1]);
 			raindrops[i].play();
 		}
 	}
