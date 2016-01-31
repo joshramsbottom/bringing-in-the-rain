@@ -228,7 +228,11 @@ class PlayState extends FlxState
 		// Add other level sprites
 		var hutsSprite = new LevelObject(98, 56, "huts.png", 201, 101);
 		levelSprites.add(hutsSprite);
-		var cropsSprite = new LevelObject(346, 110, "crops.png", 52, 60);
+
+		var cropsSprite = new EffectObject(346, 94, 346, 94, "swarm", "locust_swarm.png", 59, 81);
+		cropsSprite.frame = cropsSprite.framesData.frames[0];
+		cropsSprite.animation.add("anim", [for (i in (1...24)) i], 8, false);
+		badThings.push(cropsSprite);
 		levelSprites.add(cropsSprite);
 
 		var sheepSprite = new EffectObject(0, 72, 0, 72, "sheep", "sheep.png", 88, 108);
