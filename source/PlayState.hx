@@ -169,6 +169,10 @@ class PlayState extends FlxState
 	private function clickPlay():Void {
 		FlxG.switchState(new PlayState());
 	}
+	private function keepShaking(timer:FlxTimer):Void {
+		FlxG.camera.shake(shakeIntensity, 0.2, FlxCamera.SHAKE_HORIZONTAL_ONLY);
+		shakeIntensity += 0.01;
+	}
 
 
 	private function updateClouds(correct:Int, wrongOrder:Int) {
