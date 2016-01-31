@@ -19,7 +19,7 @@ class Altar extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, itemNames:Array<String>) {
 		allItems = itemNames;
 		sequence = initSequence();
-		//trace(sequence);
+		trace(sequence);
 		super(X, Y);
 
 		places = [for(i in (0...4)) new Place(x+32*i, y, sequence[i])];

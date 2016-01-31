@@ -24,9 +24,10 @@ class PlayState extends FlxState
 	private var levelSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var characterSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var effectsSprites:FlxSpriteGroup = new FlxSpriteGroup();
+	private var raindropSprites:FlxSpriteGroup = new FlxSpriteGroup();
 	private var altar:Altar;
 	private var items:Array<Item> = [];
-	private var raindrops:Array<TiledLevelObject>;
+	private var raindrops:Array<Raindrop>;
 	private var currentItem:Item;
 	private var godlyRays:TiledLevelObject;
 	private var allItems:Array<String> = [
@@ -138,20 +139,13 @@ class PlayState extends FlxState
 			clearAltar();
 		}
 	}
-	private function randomiseRain(t:FlxTimer):Void {
-		for(i in (0...200)) {
-			raindrops[i].x = FlxRandom.intRanged(0, 400);
-			raindrops[i].y = FlxRandom.intRanged(0, 300);
-		}
-		var timer = new FlxTimer(0.5, randomiseRain);
-	}
 	private function createRain(correct:Int):Void {
 		for(i in (0...200)) {
 			raindrops[i].kill();
 		}
 		for(i in (0...correct*50)) {
-			raindrops[i].reset(FlxRandom.intRanged(0, 400), FlxRandom.intRanged(0, 300));
-			raindrops[i].animation.play("land");
+			raindrops[i].setSpeed(correct);
+			raindrops[i].play();
 		}
 	}
 	private function checkBadThing(timer:FlxTimer):Void {
@@ -221,9 +215,6 @@ class PlayState extends FlxState
 		levelSprites.add(sheepSprite);
 		var fenceSprite = new LevelObject(0, 106, "fence.png", 88, 55);
 		levelSprites.add(fenceSprite);
-		//var riverSprite = new TiledLevelObject(325, 108, "river.png", 75, 100);
-		//riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
-		//levelSprites.add(riverSprite);
 		var leftVillager = new LevelObject(122, 103, "villager_small.png", 15, 38);
 		levelSprites.add(leftVillager);
 		var rightVillager = new LevelObject(264, 110, "villager_small.png", 15, 38, true);
@@ -276,26 +267,21 @@ class PlayState extends FlxState
 		// Add the rain
 		raindrops = [];
 		for(i in (0...200)) {
-			var raindrop = new TiledLevelObject(FlxRandom.intRanged(0, 400), FlxRandom.intRanged(0, 300), "raindrop.png", 16, 16);
-			raindrop.animation.add("land", [0, 1, 2, 3, 4, 5], 12, true);
-			backgroundSprites.add(raindrop);
+			var startX = FlxRandom.intRanged(0, 700);
+			var endY = FlxRandom.intRanged(117, 300);
+			var endX = startX-endY; // The raindrops fall 45 degrees
+			var raindrop = new Raindrop(startX, 0, endX, endY, FlxRandom.floatRanged(1, 4));
+			raindropSprites.add(raindrop);
 			raindrop.kill();
 			raindrops.push(raindrop);
 		}
-		var t = new FlxTimer(0, randomiseRain);
-		// Add a sky sprite
-		// This is above the background sprites so rain doesn't stop in mid air
-		var skySprite:FlxSprite = new FlxSprite();
-		skySprite.loadGraphic("assets/images/sky.png");
-		skySprite.setGraphicSize(400, 300);
-		skySprite.updateHitbox();
 
 		// Add sprites in correct order
 		add(backgroundSprites);
-		add(skySprite);
 		add(effectsSprites);
 		add(levelSprites);
 		add(characterSprites);
+		add(raindropSprites);
 
 		// Add sounds
 		soundManager = new SoundManager();
