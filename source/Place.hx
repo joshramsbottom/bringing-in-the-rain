@@ -12,7 +12,9 @@ class Place extends FlxSprite {
 		occupied = false;
 		this.placeName = placeName;
 		super(X, Y);
-		makeGraphic(32, 32, FlxColor.AZURE);
+		setGraphicSize(32, 32);
+		updateHitbox();
+		offset.set(-32, 0);
 	}
 	public function getName():String {
 		return placeName;
@@ -30,5 +32,9 @@ class Place extends FlxSprite {
 	}
 	public function setOccupied(occupied:Bool):Void {
 		this.occupied = occupied;
+	}
+	public function clear():Void {
+		placedItem = null;
+		occupied = false;
 	}
 }

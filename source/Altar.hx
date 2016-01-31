@@ -4,6 +4,7 @@
 // Otherwise, things die
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel.util.FlxRandom;
@@ -18,11 +19,16 @@ class Altar extends FlxSprite
 	public function new(X:Float=0, Y:Float=0, itemNames:Array<String>) {
 		allItems = itemNames;
 		sequence = initSequence();
-		trace(sequence);
-		places = [for(i in (0...4)) new Place(350+50*i, 350, sequence[i])];
-		placeGroup = new FlxTypedGroup();
+		//trace(sequence);
 		super(X, Y);
-		makeGraphic(300, 100, FlxColor.BLUE);
+
+		places = [for(i in (0...4)) new Place(x+32*i, y, sequence[i])];
+		placeGroup = new FlxTypedGroup();
+
+		loadGraphic("assets/images/altar.png");
+		setGraphicSize(128, 49);
+		updateHitbox();
+
 		for(place in places) {
 			placeGroup.add(place);
 		}
@@ -44,14 +50,21 @@ class Altar extends FlxSprite
 	public function checkGuess():Array<Int> {
 		var totalRightItems:Int = 0;
 		var wrongOrderItems:Int = 0;
+		//trace(sequence);
 
 		for (place in places) {
 			var placedItem:String = place.getPlacedItem();
+			//trace(placedItem, place.getName());
 			if (sequence.indexOf(placedItem) != -1)
 				totalRightItems ++;
 			if (placedItem != place.getName())
 				wrongOrderItems ++;
 		}
 		return [totalRightItems, wrongOrderItems];
+	}
+	public function clear():Void {
+		for(place in places) {
+			place.clear();
+		}
 	}
 }

@@ -7,24 +7,27 @@ import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flash.events.EventDispatcher;
 
-class Item extends FlxSprite
+class Item extends LevelObject
 {
 	private var name:String;
 
+	private var originX:Float;
+	private var originY:Float;
 	private var oldX:Float;
 	private var oldY:Float;
 	private var offsetX:Float;
 	private var offsetY:Float;
 	private var placed:Bool;
-	public function new(X:Float=0, Y:Float=0, color:Int=FlxColor.WHITE, name:String="unknown") {
+	public function new(X:Float=0, Y:Float=0, name:String="unknown") {
 		placed = false;
+		originX = X;
+		originY = Y;
 		oldX = X;
 		oldY = Y;
 		offsetX = 0;
 		offsetY = 0;
 		this.name = name;
-		super(X, Y);
-		makeGraphic(32, 32, color);
+		super(X, Y, name+".png", 32, 32);
 	}
 	public function setOffsetX(x:Float):Void {
 		this.offsetX = x;
@@ -54,5 +57,11 @@ class Item extends FlxSprite
 	public function revertPosition():Void {
 		this.x = this.oldX;
 		this.y = this.oldY;
+	}
+	public function clear():Void {
+		this.x = this.originX;
+		this.y = this.originY;
+		this.placed = false;
+		this.lockPosition();
 	}
 }
