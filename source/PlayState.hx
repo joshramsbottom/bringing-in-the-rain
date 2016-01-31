@@ -237,6 +237,12 @@ class PlayState extends FlxState
 		badThings.push(sheepSprite);
 		levelSprites.add(sheepSprite);
 
+		var ufo = new EffectObject(0, 20, 0, 20, "ufo", "ufo.png", 121, 101);
+		ufo.frame = ufo.framesData.frames[0];
+		ufo.animation.add("anim", [for (i in (0...38)) i], 10, false);
+		badThings.push(ufo);
+		levelSprites.add(ufo);
+
 		//var riverSprite = new TiledLevelObject(325, 108, "river.png", 75, 100);
 		//riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
 		//levelSprites.add(riverSprite);
@@ -296,6 +302,7 @@ class PlayState extends FlxState
 		earthquake.kill();
 		effectsSprites.add(earthquake);
 		badThings.push(earthquake);
+
 
 		// Add background sprite
 		var bgSprite:FlxSprite = new FlxSprite();
