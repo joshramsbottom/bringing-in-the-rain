@@ -30,6 +30,9 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	<assets path="assets" />
+	<assets path="assets/sounds" >
+		<sound path="wind.wav" id="wind" />
+	</assets>
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 
