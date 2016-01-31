@@ -145,8 +145,6 @@ class PlayState extends FlxState
 			if(wrongOrder==0) {
 				rainbow.animation.play("win");
 				rainbow.visible = true;
-				var _winText = new FlxText(150, 150, 150, "The Gods are happy with your sacrifice. You get double rainbows and your crops prosper. You win.", 10);
-				add(_winText);
 				var _btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
 				add(_btnPlay);
 				//FlxG.switchState(new WinState());
@@ -221,8 +219,6 @@ class PlayState extends FlxState
 			bigVillager.animation.play("giveup");
 			leader.animation.play("giveup");
 			hutFire.visible = true;
-			var _loseText = new FlxText(150, 150, 150, "The Gods are angry with your sacrifice. Your village burns to the ground. Blood rains from the skies and the sharknado destroys your crops. You die.", 10);
-			add(_loseText);
 			var _btnPlay = new FlxButton(175, 250, "Play again", clickPlay);
 			add(_btnPlay);
 		}
