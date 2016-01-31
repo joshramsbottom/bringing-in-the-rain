@@ -395,7 +395,7 @@ class PlayState extends FlxState
 		effectsSprites.add(riverSprite);
 
 		var tornado = new EffectObject(390, 10, -80, 10, "tornado", 6, "tornado.png", 83, 119, "wind");
-		tornado.animation.add("anim", [0,1,2,3,4], 10, true);
+		tornado.animation.add("anim", [0,1,2,3,4], 6, true);
 		tornado.kill();
 		effectsSprites.add(tornado);
 		badThings.push(tornado);
