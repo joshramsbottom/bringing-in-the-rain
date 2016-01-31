@@ -331,7 +331,7 @@ class PlayState extends FlxState
 
 		bigVillager = new TiledLevelObject(280, 111, "villager_nude.png", 48, 96);
 		bigVillager.animation.add("idle", [for (i in (0...50)) i], 5, true);
-		bigVillager.animation.add("giveup", [for(i in (40...52)) i], 12, false);
+		bigVillager.animation.add("giveup", [for(i in (50...62)) i], 12, false);
 		levelSprites.add(bigVillager);
 		bigVillager.animation.play("idle");
 
@@ -385,8 +385,8 @@ class PlayState extends FlxState
 
 		// Add effects sprites
 		var riverSprite = new EffectObject(325, 108, 325, 108, "river", 1, "river.png", 75, 100);
-		riverSprite.frame = riverSprite.framesData.frames[3]; // This looks too clunky
-		riverSprite.animation.add("anim", [3,2,1,0], 1, false);
+		riverSprite.frame = riverSprite.framesData.frames[4]; // This looks too clunky
+		riverSprite.animation.add("anim", [4,3,2,1,0,], 1, false);
 		badThings.push(riverSprite);
 		effectsSprites.add(riverSprite);
 
